@@ -1,0 +1,18 @@
+# Build output
+target/
+**/target/
+
+# Codespace / Docker artifacts
+codespace/
+=
+CACHED
+[build
+[internal]
+[stage-1
+transferring
+
+# Archives
+*.zip
+
+# Editor
+.vscode/
