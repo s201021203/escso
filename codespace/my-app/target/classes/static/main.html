@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SandCatGo - Platinum Test Suite Generator</title>
+    <link rel="icon" type="image/png" href="/images/ec2e0992-64c8-4940-90fe-1a89ec77c7fe.png">
+    <!-- html2canvas for PNG Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --platinum-primary: #E5E4E2;
+            --platinum-secondary: #D4D4D4;
+            --platinum-dark: #B0B0B0;
+            --platinum-accent: #C0C0C0;
+            --platinum-accent-dark: #A0A0A0;
+            --platinum-black: #1A1A1A;
+            --platinum-glow: rgba(229, 228, 226, 0.4);
+            --card-bg: rgba(30, 30, 30, 0.9);
+            --input-bg: rgba(40, 40, 40, 0.95);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: 
+                linear-gradient(rgba(15, 15, 15, 0.9), rgba(25, 25, 25, 0.95)),
+                url('r99e_l0hq_210426.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: var(--platinum-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .sandcat-logo {
+            height: 80px;
+            width: auto;
+            filter: drop-shadow(0 0 8px var(--platinum-glow));
+        }
+
+        .header-text h1 {
+            color: var(--platinum-primary);
+            font-size: 2.8rem;
+            margin-bottom: 5px;
+            text-shadow: 0 0 15px var(--platinum-glow);
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--platinum-primary), var(--platinum-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-text h2 {
+            color: var(--platinum-secondary);
+            font-size: 1.2rem;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+        }
+
+        .tagline {
+            font-style: italic;
+            color: var(--platinum-dark);
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(229, 228, 226, 0.3);
+            padding: 30px;
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--platinum-primary), transparent);
+        }
+
+        .input-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .formula-container {
+            padding: 20px;
+            border-radius: 10px;
+            background: var(--input-bg);
+            border: 1px solid rgba(229, 228, 226, 0.2);
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: var(--platinum-primary);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-message > div:last-child {
+    text-align: center;
+    width: 100%;
+}
+
+        /* Add these styles to your CSS */
+.loading-spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 15px;
+}
+
+.loading-spinner:after {
+    content: " ";
+    display: block;
+    width: 32px;
+    height: 32px;
+    margin: 4px;
+    border-radius: 50%;
+    border: 3px solid var(--platinum-primary);
+    border-color: var(--platinum-primary) transparent var(--platinum-primary) transparent;
+    animation: loading-spinner 1.2s linear infinite;
+}
+
+@keyframes loading-spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-message {
+    color: var(--platinum-primary);
+    font-size: 1.1rem;
+    width: 100%;
+    padding: 40px 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    height: 100%;
+    min-height: 200px;
+
+    font-family: inherit;   /* ✅ FIX monospace inheritance */
+    white-space: normal;    /* ✅ FIX pre-wrap inheritance */
+}
+
+.error-message {
+    color: #ff6b6b;
+    font-size: 1.1rem;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 40px 20px;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 107, 107, 0.1);
+
+    display: flex;                 /* ✅ KEY */
+    flex-direction: column;        /* ✅ KEY */
+    justify-content: center;        /* ✅ vertical center */
+    align-items: center;            /* ✅ horizontal center */
+    text-align: center;
+}
+
+/* ✅ Force all gateway / error messages to be visually centered */
+.gateway-message {
+    max-width: 520px;          /* fixes visual drift */
+    margin: 0 auto;            /* centers the block itself */
+}
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 10px;
+            color: var(--platinum-secondary);
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid rgba(229, 228, 226, 0.3);
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            background: var(--input-bg);
+            color: var(--platinum-primary);
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--platinum-primary);
+            box-shadow: 0 0 8px var(--platinum-glow);
+        }
+
+        .generate-btn {
+            padding: 16px;
+            background: linear-gradient(135deg, var(--platinum-primary), var(--platinum-dark));
+            color: var(--platinum-black);
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(229, 228, 226, 0.3);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(229, 228, 226, 0.4);
+        }
+
+        .result-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(229, 228, 226, 0.2);
+        }
+
+        .result-header h3 {
+            color: var(--platinum-primary);
+            font-size: 1.4rem;
+        }
+
+        .test-count { 
+        background: rgba(229, 228, 226, 0.2); 
+        padding: 5px 12px; 
+        border-radius: 20px; 
+        font-size: 0.9rem; 
+        color: #C9A227; 
+        font-weight: 700;              /* 🔥 bold */
+        }
+
+        .result-container {
+            flex: 1;
+            padding: 20px;
+            border-radius: 10px;
+            background: var(--input-bg);
+            border: 1px solid rgba(229, 228, 226, 0.2);
+            overflow-y: auto;
+            max-height: 350px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            color: var(--platinum-primary);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+            line-height: 1.5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .awaiting-config {
+            color: var(--platinum-dark);
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-style: italic;
+            padding: 40px 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .export-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .export-btn {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--platinum-secondary), var(--platinum-dark));
+            color: var(--platinum-black);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: var(--platinum-secondary);
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--platinum-primary), transparent);
+        }
+
+        .footer-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            filter: drop-shadow(0 0 5px rgba(229, 228, 226, 0.3));
+        }
+
+        .footer-logo:hover {
+            transform: translateY(-3px);
+            filter: drop-shadow(0 0 10px rgba(229, 228, 226, 0.5));
+        }
+
+        .copyright {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--platinum-dark);
+        }
+
+        .developers {
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--platinum-secondary);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--platinum-primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(20px);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .logo-container {
+                flex-direction: column;
+            }
+            
+            .header-text h1 {
+                font-size: 2.2rem;
+            }
+            
+            .export-controls {
+                flex-direction: column;
+            }
+            
+            .footer-logos {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated background particles -->
+    <div class="particles" id="particles"></div>
+
+    <div class="header">
+        <div class="logo-container">
+            <img src="/images/ec2e0992-64c8-4940-90fe-1a89ec77c7fe.png" class="sandcat-logo" alt="Sand Cat Logo">
+            <div class="header-text">
+                <h1>SandCatGo</h1>
+                <h2>Platinum Test Suite Generator</h2>
+                <div class="tagline">Advanced optimization with premium platinum performance</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="card input-card" id="captureBox">
+            <div class="formula-container" id="formulaDisplay">
+                → 2, 2²
+            </div>
+
+            <div class="input-group">
+                <label for="strength">Strength (t):</label>
+                <input type="number" id="strength" value="2" oninput="updateFormula()">
+            </div>
+
+            <div class="input-group">
+                <label for="values">
+                    Parameter Values (comma-separated):
+                </label>
+                <input
+                    type="text"
+                    id="values"
+                    value="2,2,2"
+                    placeholder="Example: 3,2,2"
+                    oninput="updateFormula()"
+                >
+            </div>
+
+            <button class="generate-btn" onclick="submitForm()">Generate Test Suite</button>
+        </div>
+
+        <div class="card result-card">
+            <div class="result-header">
+                <h3>Generated Test Suite</h3>
+                <div class="test-count" id="testCount">0 test cases</div>
+            </div>
+            <div class="result-container" id="result">
+                <div class="awaiting-config">Awaiting input configuration...</div>
+            </div>
+            <div class="export-controls">
+                <button id="printBtn" class="export-btn" style="display:none;" onclick="savePNG()">Save as PNG</button>
+                <button id="downloadBtn" class="export-btn" style="display:none;" onclick="downloadText()">Download as TXT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-logos">
+            <img src="/images/unimap-logo.png" class="footer-logo" alt="UniMAP Logo">
+            <img src="/images/advacomp-logo.png" class="footer-logo" alt="ADVCOMP Logo">
+        </div>
+
+        <div class="copyright">
+            <strong>© 2026 Universiti Malaysia Perlis (UniMAP) — Faculty of Intelligent Computing</strong>
+        </div>
+
+        <div class="developers">
+            Developed by:<br>
+            Muhammad Aiman bin Mohd Asyraf, 
+            Assoc. Prof. Dr. Rozmie Razif B. Othman,
+            Ts. Dr. Mohd Zamri B. Zahir Ahmad, Ts. Dr. Ahmad Ashraf Abdul Halim,
+            Murad Muhammad Hasan Salih Al-Walidi
+        </div>
+    </div>
+
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const size = Math.random() * 3 + 1;
+                const delay = Math.random() * 15;
+                
+                particle.style.left = `${left}%`;
+                particle.style.top = `${top}%`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function updateFormula() {
+            const strength = document.getElementById("strength").value;
+            const valuesRaw = document.getElementById("values").value;
+
+            if (!valuesRaw) {
+                document.getElementById("formulaDisplay").innerHTML = "—";
+                return;
+            }
+
+            const values = valuesRaw.split(",").map(v => v.trim());
+
+            // Build symbolic representation: 3×2²
+            const freq = {};
+            values.forEach(v => freq[v] = (freq[v] || 0) + 1);
+
+            const config = Object.entries(freq)
+                .map(([val, count]) => count > 1 ? `${val}<sup>${count}</sup>` : val)
+                .join(" × ");
+
+            document.getElementById("formulaDisplay").innerHTML =
+                `${strength}, ${config}`;
+        }
+
+        function handleGatewayError(retryFn) {
+    const resultDiv = document.getElementById("result");
+    const generateBtn = document.querySelector('.generate-btn');
+
+    resultDiv.innerHTML = `
+        <div class="error-message gateway-message">
+            <strong>Service Temporarily Unavailable</strong><br><br>
+            The system encountered a gateway error (502).<br>
+            This usually happens when the service is restarting or
+            the computation is very heavy.<br><br>
+            <em>Retrying automatically in 1 minute 40 seconds...</em>
+        </div>
+    `;
+
+    document.getElementById("testCount").innerText = "0 test cases";
+    document.getElementById("printBtn").style.display = "none";
+    document.getElementById("downloadBtn").style.display = "none";
+
+    // 🔓 Re-enable button so retry works
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate Test Suite";
+
+    // ⏳ 1 minute 40 seconds retry
+    setTimeout(() => {
+        retryFn();
+    }, 100000);
+}
+
+        async function submitForm() {
+    let strength = parseInt(document.getElementById("strength").value);
+    let valuesRaw = document.getElementById("values").value.trim();
+
+
+    const resultDiv = document.getElementById("result");
+
+    /* ===============================
+       EARLY LOGIC CHECK (NO SERVER)
+       =============================== */
+    if (!valuesRaw) {
+    resultDiv.innerHTML = `
+        <div class="error-message gateway-message">
+            <strong>Invalid Configuration</strong><br><br>
+            Please enter parameter values.<br>
+            Example: <code>3,2,2</code>
+        </div>
+    `;
+    document.getElementById("testCount").innerText = "0 test cases";
+    return;
+    }
+
+    let valuesArray = valuesRaw.split(",").map(v => v.trim());
+
+    if (valuesArray.some(v => isNaN(v) || parseInt(v) <= 0)) {
+        resultDiv.innerHTML = `
+            <div class="error-message gateway-message">
+                <strong>Invalid Values</strong><br><br>
+                All values must be positive integers.
+            </div>
+        `;
+        document.getElementById("testCount").innerText = "0 test cases";
+        return;
+    }
+
+    if (strength > valuesArray.length) {
+        resultDiv.innerHTML = `
+            <div class="error-message gateway-message">
+                <strong>Invalid Configuration</strong><br><br>
+                Interaction strength (t) must not exceed number of parameters (k).
+            </div>
+        `;
+        document.getElementById("testCount").innerText = "0 test cases";
+        return;
+    }
+
+    /* ===============================
+       SAFE TO CALL SERVER
+       =============================== */
+
+    let baseUrl = "/generate";
+    let params = `?strength=${strength}&values=${encodeURIComponent(valuesRaw)}`;
+
+    resultDiv.innerHTML = `
+        <div class="loading-message">
+            <div class="loading-spinner"></div>
+            <div>
+                Calculating test suite...<br>
+                <small>Please wait while the system processes your request</small>
+            </div>
+        </div>
+    `;
+
+    const generateBtn = document.querySelector('.generate-btn');
+    const originalText = generateBtn.textContent;
+    generateBtn.textContent = 'Processing...';
+    generateBtn.disabled = true;
+
+    try {
+        const response = await fetch(baseUrl + params);
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        }
+
+        const result = await response.text();
+
+        if (
+            result.includes("Error") ||
+            result.includes("error") ||
+            result.includes("Exception")
+        ) {
+            throw new Error(result.substring(0, 200));
+        }
+
+        resultDiv.innerHTML = '';
+        resultDiv.textContent = result;
+
+        // Force top alignment & reset scroll
+        resultDiv.style.alignItems = "flex-start";
+        resultDiv.style.justifyContent = "flex-start";
+        resultDiv.scrollTop = 0;
+
+        let count = result
+            .split("\n")
+            .filter(line => /^\d+\)/.test(line)).length;
+
+        document.getElementById("testCount").innerText = `${count} test cases`;
+        document.getElementById("printBtn").style.display = "block";
+        document.getElementById("downloadBtn").style.display = "block";
+
+    } catch (error) {
+        console.error('Error details:', error);
+
+        resultDiv.innerHTML = `
+            <div class="error-message gateway-message">
+                <strong>Execution Failed</strong>
+                <p>${error.message}</p>
+                <p>Please try a smaller configuration.</p>
+            </div>
+        `;
+
+        document.getElementById("testCount").innerText = "0 test cases";
+        document.getElementById("printBtn").style.display = "none";
+        document.getElementById("downloadBtn").style.display = "none";
+
+    } finally {
+        generateBtn.textContent = originalText;
+        generateBtn.disabled = false;
+    }
+}
+
+        async function savePNG() {
+            const box = document.getElementById("captureBox");
+            const canvas = await html2canvas(box, { 
+                scale: 2,
+                backgroundColor: null
+            });
+            const imgData = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.href = imgData;
+            link.download = "SandCatGo_TestSuite.png";
+            link.click();
+        }
+
+        function downloadText() {
+
+            let raw = document.getElementById("result").innerText;
+
+            let cleaned = raw
+                .replace(/Result Set.*?\n/g, "")
+                .replace(/Result Set.*cases\./g, "")
+                .trim();
+
+            let count = cleaned.split("\n").filter(line => /^\d+\)/.test(line)).length;
+
+            let header = `SandCatGo Platinum Test Suite\nConfiguration: t=${strength}, values=[${valuesRaw}]\n\n`;
+            let footer = `\n\nCompleted with ${count} test cases.`;
+
+            let finalText = header + cleaned + footer;
+
+            let blob = new Blob([finalText], { type: "text/plain" });
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "SandCatGo_Platinum_test_suite.txt";
+            link.click();
+        }
+
+        // Initialize particles when page loads
+        window.addEventListener('DOMContentLoaded', createParticles);
+    </script>
+
+    <!-- 🔒 DevTools / View Source deterrent -->
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        document.addEventListener('keydown', function (e) {
+            if (
+                e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+                (e.ctrlKey && e.key === 'U')
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

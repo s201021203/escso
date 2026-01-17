@@ -2,8 +2,14 @@
 target/
 **/target/
 
-# Codespace / Docker artifacts
-codespace/
+# Ignore everything in codespace
+codespace/*
+
+# BUT keep the real Maven project
+!codespace/my-app/
+!codespace/my-app/**
+
+# Docker / temp junk
 =
 CACHED
 [build
