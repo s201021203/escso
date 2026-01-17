@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SandCatGo - Platinum Test Suite Generator</title>
+    <link rel="icon" type="image/png" href="/images/ec2e0992-64c8-4940-90fe-1a89ec77c7fe.png">
+    <!-- html2canvas for PNG Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --platinum-primary: #E5E4E2;
+            --platinum-secondary: #D4D4D4;
+            --platinum-dark: #B0B0B0;
+            --platinum-accent: #C0C0C0;
+            --platinum-accent-dark: #A0A0A0;
+            --platinum-black: #1A1A1A;
+            --platinum-glow: rgba(229, 228, 226, 0.4);
+            --card-bg: rgba(30, 30, 30, 0.9);
+            --input-bg: rgba(40, 40, 40, 0.95);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: 
+                linear-gradient(rgb(0, 0, 0), rgb(54, 54, 54)),
+                url('r99e_l0hq_210426.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: var(--platinum-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .sandcat-logo {
+            height: 80px;
+            width: auto;
+            filter: drop-shadow(0 0 8px var(--platinum-glow));
+        }
+
+        .header-text h1 {
+            color: var(--platinum-primary);
+            font-size: 2.8rem;
+            margin-bottom: 5px;
+            text-shadow: 0 0 15px var(--platinum-glow);
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--platinum-primary), var(--platinum-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-text h2 {
+            color: var(--platinum-secondary);
+            font-size: 1.2rem;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+        }
+
+        .tagline {
+            font-style: italic;
+            color: var(--platinum-dark);
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(229, 228, 226, 0.3);
+            padding: 30px;
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--platinum-primary), transparent);
+        }
+
+        .input-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .formula-container {
+            padding: 20px;
+            border-radius: 10px;
+            background: var(--input-bg);
+            border: 1px solid rgba(229, 228, 226, 0.2);
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: var(--platinum-primary);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-message > div:last-child {
+    text-align: center;
+    width: 100%;
+}
+
+        /* Add these styles to your CSS */
+.loading-spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 15px;
+}
+
+.loading-spinner:after {
+    content: " ";
+    display: block;
+    width: 32px;
+    height: 32px;
+    margin: 4px;
+    border-radius: 50%;
+    border: 3px solid var(--platinum-primary);
+    border-color: var(--platinum-primary) transparent var(--platinum-primary) transparent;
+    animation: loading-spinner 1.2s linear infinite;
+}
+
+@keyframes loading-spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-message {
+    color: var(--platinum-primary);
+    font-size: 1.1rem;
+    width: 100%;
+    padding: 40px 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    height: 100%;
+    min-height: 200px;
+
+    font-family: inherit;   /* ✅ FIX monospace inheritance */
+    white-space: normal;    /* ✅ FIX pre-wrap inheritance */
+}
+
+.error-message {
+    color: #ff6b6b;
+    font-size: 1.1rem;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 40px 20px;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 107, 107, 0.1);
+
+    display: flex;                 /* ✅ KEY */
+    flex-direction: column;        /* ✅ KEY */
+    justify-content: center;        /* ✅ vertical center */
+    align-items: center;            /* ✅ horizontal center */
+    text-align: center;
+}
+
+/* ✅ Force all gateway / error messages to be visually centered */
+.gateway-message {
+    max-width: 520px;          /* fixes visual drift */
+    margin: 0 auto;            /* centers the block itself */
+}
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 10px;
+            color: var(--platinum-secondary);
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid rgba(229, 228, 226, 0.3);
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            background: var(--input-bg);
+            color: var(--platinum-primary);
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--platinum-primary);
+            box-shadow: 0 0 8px var(--platinum-glow);
+        }
+
+        .generate-btn {
+            padding: 16px;
+            background: linear-gradient(135deg, var(--platinum-primary), var(--platinum-dark));
+            color: var(--platinum-black);
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(229, 228, 226, 0.3);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(229, 228, 226, 0.4);
+        }
+
+        .result-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(229, 228, 226, 0.2);
+        }
+
+        .result-header h3 {
+            color: var(--platinum-primary);
+            font-size: 1.4rem;
+        }
+
+        .test-count { 
+        background: rgba(229, 228, 226, 0.2); 
+        padding: 5px 12px; 
+        border-radius: 20px; 
+        font-size: 0.9rem; 
+        color: #C9A227; 
+        font-weight: 700;              /* 🔥 bold */
+        }
+
+        .result-container {
+            flex: 1;
+            padding: 20px;
+            border-radius: 10px;
+            background: var(--input-bg);
+            border: 1px solid rgba(229, 228, 226, 0.2);
+            overflow-y: auto;
+            max-height: 350px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            color: var(--platinum-primary);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+            line-height: 1.5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .awaiting-config {
+            color: var(--platinum-dark);
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-style: italic;
+            padding: 40px 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .export-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .export-btn {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--platinum-secondary), var(--platinum-dark));
+            color: var(--platinum-black);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: var(--platinum-secondary);
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--platinum-primary), transparent);
+        }
+
+        .footer-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            filter: drop-shadow(0 0 5px rgba(229, 228, 226, 0.3));
+        }
+
+        .footer-logo:hover {
+            transform: translateY(-3px);
+            filter: drop-shadow(0 0 10px rgba(229, 228, 226, 0.5));
+        }
+
+        .copyright {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--platinum-dark);
+        }
+
+        .developers {
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--platinum-secondary);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--platinum-primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(20px);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .logo-container {
+                flex-direction: column;
+            }
+            
+            .header-text h1 {
+                font-size: 2.2rem;
+            }
+            
+            .export-controls {
+                flex-direction: column;
+            }
+            
+            .footer-logos {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+        
+        /* Single input row */
+        .input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+        
+        input {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            color: #2d3748;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--platinum-secondary);
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+            background: white;
+        }
+        
+        .add-btn {
+            background: linear-gradient(135deg, #000000 0%, #606f83 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            min-width: 200px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(49, 130, 206, 0.2);
+        }
+        
+        .add-btn:hover {
+            background: linear-gradient(135deg, #000000 0%, #606f83 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(49, 130, 206, 0.3);
+        }
+        
+        /* Tables Container */
+        .tables-container {
+            display: grid;
+            gap: 15px; /* CHANGED from 25px to 15px */
+            margin-bottom: 20px; /* CHANGED from 30px to 20px */
+        }
+        
+        /* Category Groups */
+        .category-group {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease;
+        }
+        
+        .category-group:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .category-header {
+            background: linear-gradient(90deg, #000000 0%, #606f83 100%);
+            color: white;
+            padding: 18px 20px;
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .category-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .category-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .category-content {
+            padding: 15px; /* CHANGED from 25px to 15px */
+        }
+        
+
+        /* Parameter Tables inside Category */
+        .parameter-tables {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* ADDED this line */
+            gap: 12px; /* CHANGED from 20px to 12px */
+        }
+        
+        .parameter-table {
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: fit-content; /* ADD this line */
+        }
+        
+        .parameter-table:hover {
+            border-color: #cbd5e0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .param-header {
+            background: linear-gradient(90deg, #000000 0%, #606f83 100%);
+            color: white;
+            padding: 12px 15px; /* CHANGED from 16px 20px to 12px 15px */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .param-name {
+            font-weight: 600;
+            font-size: 17px;
+        }
+        
+        .delete-param-btn {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .delete-param-btn:hover {
+            background: #c53030;
+            transform: scale(1.05);
+        }
+        
+        .param-content {
+            padding: 15px; /* CHANGED from 20px to 15px */
+        }
+        
+        /* Input list inside parameter table */
+        .inputs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* CHANGED from 10px to 8px */
+            margin-bottom: 15px; /* CHANGED from 20px to 15px */
+            min-height: 40px;
+        }
+        
+        .input-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px; /* CHANGED from 12px 15px to 10px 12px */
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        
+        .input-item:hover {
+            border-color: #cbd5e0;
+            background: #f7fafc;
+        }
+        
+        .input-name {
+            font-size: 14px; /* CHANGED from 15px to 14px */
+            color: #2d3748;
+            font-weight: 500;
+        }
+        
+        .delete-input-btn {
+            background: #fed7d7;
+            color: #c53030;
+            border: none;
+            width: 22px; /* CHANGED from 26px to 22px */
+            height: 22px; /* CHANGED from 26px to 22px */
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px; /* CHANGED from 16px to 14px */
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+        
+        .delete-input-btn:hover {
+            background: #feb2b2;
+            transform: scale(1.1);
+        }
+        
+        /* Add input to parameter */
+        .add-input-row {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .add-input-row input {
+            flex: 1;
+            padding: 12px 15px;
+            font-size: 15px;
+        }
+        
+        .add-to-param-btn {
+            background: #18222c;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .add-to-param-btn:hover {
+            background: #0e1a29;
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #f8fbff;
+            margin-bottom: 30px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 2px dashed #e2e8f0;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #718096;
+            font-weight: 600;
+            font-size: 20px;
+        }
+        
+        .empty-state p {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* Formula Box */
+        .formula-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #009ef9;
+            margin-top: 25px;
+        }
+        
+        .formula-title {
+            color: #2c5282;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .formula-title:before {
+            content: "Σ";
+            background: #000000;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .formula-content {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 22px;
+            color: #ffffff;
+            text-align: center;
+            padding: 18px;
+            background:var(--input-bg);
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        
+        .formula-explanation {
+            color: #718096;
+            font-size: 15px;
+            margin-top: 12px;
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        /* Strength Input */
+        .strength-section {
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #fde68a;
+            margin-top: 25px;
+        }
+        
+        .strength-title {
+            color: #d97706;
+            font-weight: 600;
+            margin-bottom: 18px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .strength-title:before {
+            content: "⚡";
+            font-size: 20px;
+        }
+        
+        .strength-input-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .strength-input-row label {
+            font-weight: 600;
+            min-width: 100px;
+            color: #92400e;
+        }
+        
+        .strength-input-row input {
+            width: 80px;
+            padding: 12px;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: #92400e;
+            background: white;
+        }
+        
+        .strength-input-row span {
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(245, 158, 11, 0.2);
+        }
+        
+        .generate-btn:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+        }
+        
+        .btn-container {
+            text-align: center;
+        }
+        
+        /* Test Cases Output */
+        .test-cases-section {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #a7f3d0;
+            margin-top: 25px;
+            display: none;
+        }
+        
+        .test-cases-title {
+            color: #065f46;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .test-cases-title:before {
+            content: "✓";
+            background: #10b981;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .test-cases-count {
+            color: #596c67;
+            margin-bottom: 18px;
+            text-align: center;
+            font-weight: 500;
+            padding: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 6px;
+        }
+        
+        .test-cases-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #616965;
+            border-radius: 8px;
+            background: var(--input-bg);
+            padding: 20px;
+        }
+        
+        .test-case {
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            background: #f9fafb;
+            border-radius: 6px;
+            border-left: 4px solid #7d7d7d;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            color: #1f2937;
+            transition: all 0.2s ease;
+        }
+        
+        .test-case:hover {
+            background: #f3f4f6;
+            transform: translateX(2px);
+        }
+
+        /* ===== MOBILE TOUCH & VISIBILITY FIX ===== */
+@media (max-width: 480px) {
+
+    button {
+        min-height: 44px;
+        font-size: 15px;
+    }
+
+    input {
+        min-height: 44px;
+        font-size: 16px;
+    }
+
+    .delete-input-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .add-input-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .add-to-param-btn {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    .param-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .delete-param-btn {
+        width: 100%;
+        min-height: 40px;
+    }
+
+    input[type="file"] {
+        width: 100%;
+        font-size: 15px;
+        padding: 10px;
+    }
+}
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .parameter-tables {
+        grid-template-columns: 1fr; /* Single column on mobile */
+    }
+    
+    .category-content {
+        padding: 12px; /* Even smaller padding on mobile */
+    }
+
+            .container {
+                padding: 20px;
+            }
+            
+            .input-row {
+                flex-direction: column;
+            }
+            
+            .add-btn {
+                width: 100%;
+            }
+            
+            .strength-input-row {
+                flex-direction: column;
+                justify-content: center; 
+            }
+            
+            .strength-input-row span {
+                margin-top: 5px;
+            }
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+
+.developers {
+    margin-top: 10px;
+    line-height: 1.6;
+}
+    </style>
+</head>
+
+<body>
+    <!-- Animated background particles -->
+    <div class="particles" id="particles"></div>
+
+    <div class="header">
+        <div class="logo-container">
+            <img src="/images/ec2e0992-64c8-4940-90fe-1a89ec77c7fe.png" class="sandcat-logo" alt="Sand Cat Logo">
+            <div class="header-text">
+                <h1>SandCatGo</h1>
+                <h2>Platinum Test Suite Generator</h2>
+                <div class="tagline">Advanced optimization with premium platinum performance</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔀 Mode Selection -->
+<div style="text-align:center; margin-bottom:30px;">
+    <button class="export-btn" onclick="showOption('A')">
+        Option A: Numeric (Expert)
+    </button>
+    <button class="export-btn" onclick="showOption('B')">
+        Option B: Guided (Beginner)
+    </button>
+</div>
+
+<div id="optionA">
+    <div class="main-container">
+        <div class="card input-card" id="captureBox">
+            <div class="formula-container" id="formulaDisplay">
+                → 2, 2²
+            </div>
+
+            <div class="input-group">
+                <label for="strength">Strength (t):</label>
+                <input type="number" id="strength" value="2" oninput="updateFormula()">
+            </div>
+
+            <div class="input-group">
+                <label for="values">
+                    Parameter Values (comma-separated):
+                </label>
+                <input
+                    type="text"
+                    id="values"
+                    value="2,2,2"
+                    placeholder="Example: 3,2,2"
+                    oninput="updateFormula()"
+                >
+            </div>
+
+            <button class="generate-btn" onclick="submitForm()">Generate Test Suite</button>
+        </div>
+
+        <div class="card result-card">
+            <div class="result-header">
+                <h3>Generated Test Suite</h3>
+                <div class="test-count" id="testCount">0 test cases</div>
+            </div>
+            <div class="result-container" id="result">
+                <div class="awaiting-config">Awaiting input configuration...</div>
+            </div>
+            <div class="export-controls">
+                <button id="printBtn" class="export-btn" style="display:none;" onclick="savePNG()">Save as PNG</button>
+                <button id="downloadBtn" class="export-btn" style="display:none;" onclick="downloadText()">Download as TXT</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="optionB" style="display:none;">
+    <div class="input-row">
+            <input type="text" id="paramInput" placeholder="Enter parameter name (e.g., 'Temperature', 'Browser', 'OS')">
+            <button class="add-btn" onclick="addParameter()">Add Parameter</button>
+        </div>
+
+        <!-- XML Import / Export -->
+        <div class="input-row">
+            <input 
+    type="file"
+    id="xmlFileInput"
+    accept=".xml,text/xml,application/xml,*/*"
+    onchange="importFromXML(event)"
+>
+        </div>
+        
+        <!-- Tables Container (Grouped by input count) -->
+        <div class="tables-container" id="tablesContainer">
+            <!-- Categories will appear here -->
+        </div>
+        
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState">
+            <h3>No Parameters Defined</h3>
+            <p>Add your first parameter above to begin creating your testing matrix. Each parameter can have multiple input values.</p>
+        </div>
+        
+        <div class="main-container">
+        <!-- Formula Box -->
+        <div class="formula-box" id="formulaBox" style="display: none;">
+            <div class="formula-title">Configuration Space</div>
+            <div class="formula-content" id="formulaText">2<sup>0</sup></div>
+            <div class="formula-explanation" id="formulaExplanation">
+                Total possible combinations based on parameters and their inputs
+            </div>
+        </div>
+    
+        <!-- Strength Input -->
+        <div class="strength-section" id="strengthSection" style="display: none;">
+            <div class="strength-title">Generate Test Cases</div>
+            <div class="strength-input-row">
+                <label for="strengthInput">Interaction Strength:</label>
+                <input type="number" id="strengthInput" min="2" value="2">
+            </div>
+            <div class="btn-container">
+                <button class="generate-btn" onclick="generateTestCasesBackend()">Generate Test Cases</button>
+            </div>
+        </div>
+        
+        <!-- Test Cases Output -->
+        <div class="test-cases-section" id="testCasesSection">
+            <div id="captureBoxB">
+
+                <!-- ✅ PNG HEADER -->
+    <div id="pngHeader" style="
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+">
+    <div style="
+        font-size: 16px;
+        font-weight: 600;
+        color: #e5e4e2;
+        margin-bottom: 6px;
+    ">
+        Configuration:
+        <span id="pngConfig" style="color:#34d399;"></span>
+    </div>
+
+    <div style="
+        font-size: 15px;
+        font-weight: 500;
+        color: #e5e4e2;
+    ">
+        Interaction Strength (t):
+        <span id="pngStrength" style="color:#60a5fa;"></span>
+    </div>
+</div>
+
+            <div class="test-cases-title">Generated Test Cases</div>
+            <div class="test-cases-count" id="testCasesCount">0 test cases generated</div>
+            <div class="test-cases-container" id="testCasesContainer">
+                <!-- Test cases will appear here -->
+            </div>
+            <div class="btn-container" style="margin-bottom:5px; margin-top: 10px;">
+                            <button class="add-btn" onclick="savePNGB()">Save as PNG</button>
+                            <button class="add-btn" onclick="downloadTextB()">Save as TXT</button>
+                            <button class="add-btn" onclick="exportToXML()">Save as XML</button>
+                        </div>
+            </div>
+        </div>
+        </div>
+</div>
+
+    <div class="footer">
+        <div class="footer-logos">
+            <img src="/images/unimap-logo.png" class="footer-logo" alt="UniMAP Logo">
+            <img src="/images/advacomp-logo.png" class="footer-logo" alt="ADVCOMP Logo">
+        </div>
+
+        <div class="copyright">
+            <strong>© 2026 Universiti Malaysia Perlis (UniMAP) — Faculty of Intelligent Computing</strong>
+        </div>
+
+        <div class="developers">
+            Developed by:<br>
+            Muhammad Aiman Mohd Asyraf, 
+            Assoc. Prof. Dr. Rozmie Razif Othman,
+            Ts. Dr. Mohd Zamri Zahir Ahmad, Ts. Dr. Ahmad Ashraf Abdul Halim,
+            Murad Muhammad Hasan Salih Al-Walidi
+        </div>
+    </div>
+
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const size = Math.random() * 3 + 1;
+                const delay = Math.random() * 15;
+                
+                particle.style.left = `${left}%`;
+                particle.style.top = `${top}%`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+                function showOption(mode) {
+            document.getElementById("optionA").style.display =
+                mode === "A" ? "block" : "none";
+
+            document.getElementById("optionB").style.display =
+                mode === "B" ? "block" : "none";
+        }
+
+        function updateFormula() {
+            const strength = document.getElementById("strength").value;
+            const valuesRaw = document.getElementById("values").value;
+
+            if (!valuesRaw) {
+                document.getElementById("formulaDisplay").innerHTML = "—";
+                return;
+            }
+
+            const values = valuesRaw.split(",").map(v => v.trim());
+
+            // Build symbolic representation: 3×2²
+            const freq = {};
+            values.forEach(v => freq[v] = (freq[v] || 0) + 1);
+
+            const config = Object.entries(freq)
+                .map(([val, count]) => count > 1 ? `${val}<sup>${count}</sup>` : val)
+                .join("");
+
+            document.getElementById("formulaDisplay").innerHTML =
+                `${strength}, ${config}`;
+        }
+
+        function handleGatewayError(retryFn) {
+    const resultDiv = document.getElementById("result");
+    const generateBtn = document.querySelector('.generate-btn');
+
+    resultDiv.innerHTML = `
+        <div class="error-message gateway-message">
+            <strong>Service Temporarily Unavailable</strong><br><br>
+            The system encountered a gateway error (502).<br>
+            This usually happens when the service is restarting or
+            the computation is very heavy.<br><br>
+            <em>Retrying automatically in 1 minute 40 seconds...</em>
+        </div>
+    `;
+
+    document.getElementById("testCount").innerText = "0 test cases";
+    document.getElementById("printBtn").style.display = "none";
+    document.getElementById("downloadBtn").style.display = "none";
+
+    // 🔓 Re-enable button so retry works
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate Test Suite";
+
+    // ⏳ 1 minute 40 seconds retry
+    setTimeout(() => {
+        retryFn();
+    }, 100000);
+}
+
+        async function submitForm() {
+    let strength = parseInt(document.getElementById("strength").value);
+    let valuesRaw = document.getElementById("values").value.trim();
+
+
+    const resultDiv = document.getElementById("result");
+
+    /* ===============================
+       EARLY LOGIC CHECK (NO SERVER)
+       =============================== */
+    if (!valuesRaw) {
+    resultDiv.innerHTML = `
+        <div class="error-message gateway-message">
+            <strong>Invalid Configuration</strong><br><br>
+            Please enter parameter values.<br>
+            Example: <code>3,2,2</code>
+        </div>
+    `;
+    document.getElementById("testCount").innerText = "0 test cases";
+    return;
+    }
+
+    let valuesArray = valuesRaw.split(",").map(v => v.trim());
+
+    if (valuesArray.some(v => isNaN(v) || parseInt(v) <= 0)) {
+        resultDiv.innerHTML = `
+            <div class="error-message gateway-message">
+                <strong>Invalid Values</strong><br><br>
+                All values must be positive integers.
+            </div>
+        `;
+        document.getElementById("testCount").innerText = "0 test cases";
+        return;
+    }
+
+    if (strength > valuesArray.length) {
+        resultDiv.innerHTML = `
+            <div class="error-message gateway-message">
+                <strong>Invalid Configuration</strong><br><br>
+                Interaction strength (t) must not exceed number of parameters (k).
+            </div>
+        `;
+        document.getElementById("testCount").innerText = "0 test cases";
+        return;
+    }
+
+    /* ===============================
+       SAFE TO CALL SERVER
+       =============================== */
+
+    let baseUrl = "/generate";
+    let params = `?strength=${strength}&values=${encodeURIComponent(valuesRaw)}`;
+
+    resultDiv.innerHTML = `
+        <div class="loading-message">
+            <div class="loading-spinner"></div>
+            <div>
+                Calculating test suite...<br>
+                <small>Please wait while the system processes your request</small>
+            </div>
+        </div>
+    `;
+
+    const generateBtn = document.querySelector('.generate-btn');
+    const originalText = generateBtn.textContent;
+    generateBtn.textContent = 'Processing...';
+    generateBtn.disabled = true;
+
+    try {
+        const response = await fetch(baseUrl + params);
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        }
+
+        const result = await response.text();
+        lastStrengthA = strength;
+        lastValuesRawA = valuesRaw;
+
+        if (
+            result.includes("Error") ||
+            result.includes("error") ||
+            result.includes("Exception")
+        ) {
+            throw new Error(result.substring(0, 200));
+        }
+
+        resultDiv.innerHTML = '';
+        resultDiv.textContent = result;
+
+        // Force top alignment & reset scroll
+        resultDiv.style.alignItems = "flex-start";
+        resultDiv.style.justifyContent = "flex-start";
+        resultDiv.scrollTop = 0;
+
+        let count = result
+            .split("\n")
+            .filter(line => /^\d+\)/.test(line)).length;
+
+        document.getElementById("testCount").innerText = `${count} test cases`;
+        document.getElementById("printBtn").style.display = "block";
+        document.getElementById("downloadBtn").style.display = "block";
+
+    } catch (error) {
+        console.error('Error details:', error);
+
+        resultDiv.innerHTML = `
+            <div class="error-message gateway-message">
+                <strong>Execution Failed</strong>
+                <p>${error.message}</p>
+                <p>Please try a smaller configuration.</p>
+            </div>
+        `;
+
+        document.getElementById("testCount").innerText = "0 test cases";
+        document.getElementById("printBtn").style.display = "none";
+        document.getElementById("downloadBtn").style.display = "none";
+
+    } finally {
+        generateBtn.textContent = originalText;
+        generateBtn.disabled = false;
+    }
+}
+
+        async function savePNG() {
+            const box = document.getElementById("captureBox");
+            const canvas = await html2canvas(box, { 
+                scale: 2,
+                backgroundColor: "#0f172a"
+            });
+            const imgData = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.href = imgData;
+            link.download = "SandCatGo_TestSuite.png";
+            link.click();
+        }
+
+        function downloadText() {
+
+            let raw = document.getElementById("result").innerText;
+
+            let cleaned = raw
+                .replace(/Result Set.*?\n/g, "")
+                .replace(/Result Set.*cases\./g, "")
+                .trim();
+
+            let count = cleaned.split("\n").filter(line => /^\d+\)/.test(line)).length;
+
+            let header = `SandCatGo Platinum Test Suite\nConfiguration: t=${lastStrengthA}, values=[${lastValuesRawA}]\n\n`;
+            let footer = `\n\nCompleted with ${count} test cases.`;
+
+            let finalText = `${header}\n\n${cleaned}\n\n${footer}`;
+
+            let blob = new Blob([finalText], { type: "text/plain" });
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "SandCatGo_Platinum_test_suite.txt";
+            link.click();
+        }
+
+        // Your existing JavaScript code remains exactly the same
+        let parameters = []; // existing
+        let inputEncoding = {}; 
+        // inputEncoding[paramIndex] = { nameToNum: {}, numToName: {} }
+        let lastRawResult = "";
+        let lastStrength = 0;
+        let lastValues = [];
+        let lastStrengthA = null;
+        let lastValuesRawA = null;
+        
+        // Add new parameter table
+        function addParameter() {
+            const paramInput = document.getElementById('paramInput');
+            const name = paramInput.value.trim();
+            
+            if (!name) {
+                alert('Please enter a parameter name');
+                return;
+            }
+            
+            // Check if parameter already exists
+            if (parameters.some(p => p.name === name)) {
+                alert('Parameter already exists!');
+                paramInput.select();
+                return;
+            }
+            
+            // Add parameter with empty inputs
+            parameters.push({
+                name: name,
+                inputs: []
+            });
+            
+            // Clear input
+            paramInput.value = '';
+            paramInput.focus();
+            
+            // Update display
+            updateTables();
+            updateFormulaB();
+        }
+        
+        // Remove parameter table
+        function removeParameter(index) {
+            if (confirm('Delete this parameter and all its inputs?')) {
+                parameters.splice(index, 1);
+                updateTables();
+                updateFormulaB();
+            }
+        }
+        
+        // Add input to a specific parameter
+        function addInputToParameter(paramIndex) {
+            const inputField = document.getElementById(`inputField-${paramIndex}`);
+            const inputName = inputField.value.trim();
+
+            if (!inputName) {
+                alert('Please enter an input name');
+                return;
+            }
+
+            // init encoding for parameter if not exist
+            if (!inputEncoding[paramIndex]) {
+                inputEncoding[paramIndex] = {
+                    nameToNum: {},
+                    numToName: {}
+                };
+            }
+
+            const nextNum = parameters[paramIndex].inputs.length + 1;
+
+            inputEncoding[paramIndex].nameToNum[inputName] = nextNum;
+            inputEncoding[paramIndex].numToName[nextNum] = inputName;
+
+            parameters[paramIndex].inputs.push(inputName);
+
+            inputField.value = '';
+            inputField.focus();
+
+            updateTables();
+            updateFormulaB();
+        }
+        
+        // Remove input from parameter
+        function removeInputFromParameter(paramIndex, inputIndex) {
+            parameters[paramIndex].inputs.splice(inputIndex, 1);
+
+            // rebuild encoding (VERY IMPORTANT)
+            inputEncoding[paramIndex] = { nameToNum: {}, numToName: {} };
+
+            parameters[paramIndex].inputs.forEach((name, i) => {
+                const num = i + 1;
+                inputEncoding[paramIndex].nameToNum[name] = num;
+                inputEncoding[paramIndex].numToName[num] = name;
+            });
+
+            updateTables();
+            updateFormulaB();
+        }
+        
+        // Group parameters by number of inputs and update display
+        function updateTables() {
+            const tablesContainer = document.getElementById('tablesContainer');
+            const emptyState = document.getElementById('emptyState');
+            const strengthSection = document.getElementById('strengthSection');
+            
+            if (parameters.length === 0) {
+                tablesContainer.innerHTML = '';
+                emptyState.style.display = 'block';
+                strengthSection.style.display = 'none';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            strengthSection.style.display = 'block';
+            
+            // Group parameters by input count
+            const groups = {};
+            parameters.forEach((param, index) => {
+                const inputCount = param.inputs.length;
+                if (!groups[inputCount]) {
+                    groups[inputCount] = [];
+                }
+                groups[inputCount].push({...param, originalIndex: index});
+            });
+            
+            // Sort groups by input count (0 inputs first, then 1, 2, 3...)
+            const sortedGroups = Object.entries(groups).sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
+            
+            let html = '';
+            
+            sortedGroups.forEach(([inputCount, params]) => {
+                const categoryName = inputCount === '0' ? 'No Inputs' : 
+                                   inputCount === '1' ? '1 Input' : 
+                                   `${inputCount} Inputs`;
+                
+                html += `
+                    <div class="category-group">
+                        <div class="category-header">
+                            <div class="category-title">
+                                <span>${categoryName}</span>
+                                <span class="category-count">${params.length} parameter${params.length > 1 ? 's' : ''}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="category-content">
+                            <div class="parameter-tables">
+                                ${params.map(param => `
+                                    <div class="parameter-table">
+                                        <div class="param-header">
+                                            <div class="param-name" title="${param.name}">${param.name.length > 15 ? param.name.substring(0, 15) + '...' : param.name}</div>
+                                            <button class="delete-param-btn" onclick="removeParameter(${param.originalIndex})">Delete</button>
+                                        </div>
+                                        
+                                        <div class="param-content">
+                                            <div class="inputs-list">
+                                                ${param.inputs.length === 0 ? 
+                                                    `<div style="text-align: center; padding: 15px; color: #a0aec0; font-style: italic;">
+                                                        No inputs defined
+                                                    </div>` : ''
+                                                }
+                                                
+                                                ${param.inputs.map((input, inputIndex) => `
+                                                    <div class="input-item">
+                                                        <div class="input-name" title="${input}">${input.length > 20 ? input.substring(0, 20) + '...' : input}</div>
+                                                        <button class="delete-input-btn" onclick="removeInputFromParameter(${param.originalIndex}, ${inputIndex})">×</button>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                            
+                                            <div class="add-input-row">
+                                                <input type="text" id="inputField-${param.originalIndex}" placeholder="Add input to ${param.name}">
+                                                <button class="add-to-param-btn" onclick="addInputToParameter(${param.originalIndex})">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            tablesContainer.innerHTML = html;
+            
+            // Add Enter key support for all input fields
+            parameters.forEach((param, index) => {
+                const inputField = document.getElementById(`inputField-${index}`);
+                if (inputField) {
+                    inputField.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            addInputToParameter(index);
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Calculate and update formula (only formula, no result)
+        function updateFormulaB() {
+            const formulaBox = document.getElementById('formulaBox');
+            const formulaText = document.getElementById('formulaText');
+            const formulaExplanation = document.getElementById('formulaExplanation');
+            
+            if (parameters.length === 0) {
+                formulaBox.style.display = 'none';
+                return;
+            }
+            
+            formulaBox.style.display = 'block';
+            
+            // Group parameters by number of inputs (excluding those with 0 inputs)
+            const inputCounts = {};
+            
+            parameters.forEach(param => {
+                const count = param.inputs.length;
+                if (count > 0) {
+                    if (!inputCounts[count]) {
+                        inputCounts[count] = 0;
+                    }
+                    inputCounts[count]++;
+                }
+            });
+            
+            // Create formula string (e.g., 2² × 3¹ × 4²)
+            let formulaParts = [];
+            
+            // Sort input counts ascending
+            const sortedCounts = Object.entries(inputCounts).sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
+            
+            for (const [inputCount, paramCount] of sortedCounts) {
+                if (paramCount > 0) {
+                    formulaParts.push(`${inputCount}<sup>${paramCount}</sup>`);
+                }
+            }        
+            // Handle case where all parameters have 0 inputs
+            if (formulaParts.length === 0) {
+                formulaText.innerHTML = "2<sup>0</sup>";
+                formulaExplanation.textContent = "No inputs in any parameter yet";
+                return;
+            }
+            
+            // Create the formula display (only the formula, no equals sign)
+            const formulaString = formulaParts.join("×");
+            formulaText.innerHTML = formulaString;
+            
+            // Create explanation
+            let explanationParts = [];
+            for (const [inputCount, paramCount] of sortedCounts) {
+                if (paramCount > 0) {
+                    explanationParts.push(`${paramCount} parameter${paramCount > 1 ? 's' : ''} with ${inputCount} input${inputCount > 1 ? 's' : ''}`);
+                }
+            }
+            
+            const explanation = explanationParts.join(", ");
+            formulaExplanation.textContent = `Parameters grouped by number of inputs: ${explanation}`;
+        }
+
+        async function generateTestCasesBackend() {
+            const strength = parseInt(document.getElementById('strengthInput').value) || 2;
+
+                const section = document.getElementById('testCasesSection');
+                const container = document.getElementById('testCasesContainer');
+                const count = document.getElementById('testCasesCount');
+                const generateBtn = document.querySelector('#strengthSection .generate-btn');
+
+            const validParams = parameters.filter(p => p.inputs.length > 0);
+            const paramValue = validParams.length; // k = number of parameters
+
+            if (validParams.length === 0) {
+                alert("No parameters with inputs");
+                generateBtn.textContent = "Generate Test Cases";
+                generateBtn.disabled = false;
+                return;
+            }
+
+            // Rule 1: strength must be >= 1
+if (strength < 1) {
+    document.getElementById('testCasesSection').style.display = 'block';
+    document.getElementById('testCasesCount').innerHTML = `
+        <div class="error-message gateway-message">
+            <strong>Invalid Interaction Strength</strong>
+            <p>Interaction strength must be a positive integer.</p>
+            <p><strong>Required condition:</strong></p>
+            <p style="font-family: monospace; text-align: center;">t ≥ 1</p>
+        </div>
+    `;
+    return;
+}
+
+// Rule 2: strength must not exceed number of parameters
+if (strength > paramValue) {
+    document.getElementById('testCasesSection').style.display = 'block';
+    document.getElementById('testCasesCount').innerHTML = `
+        <div class="error-message gateway-message">
+            <strong>Invalid Configuration</strong>
+            <p>
+                Interaction strength (<strong>t = ${strength}</strong>) must not exceed
+                the number of parameters (<strong>k = ${paramValue}</strong>).
+            </p>
+            <p><strong>Required condition:</strong></p>
+            <p style="font-family: monospace; text-align: center;">
+                1 ≤ t ≤ k
+            </p>
+        </div>
+    `;
+        generateBtn.textContent = "Generate Test Cases";
+    generateBtn.disabled = false;
+    return;
+}
+
+            const values = validParams.map(p => p.inputs.length);
+            const valuesStr = values.join(",");
+
+            const baseUrl = "/generate";
+            const url = `${baseUrl}?strength=${strength}&values=${valuesStr}`;
+
+                section.style.display = 'block';
+
+    container.innerHTML = `
+        <div class="loading-message">
+            <div class="loading-spinner"></div>
+            <div>
+                Calculating test suite...<br>
+                <small>Please wait while the system processes your request</small>
+            </div>
+        </div>
+    `;
+
+    count.textContent = "Processing…";
+
+    const originalText = generateBtn.textContent;
+    generateBtn.textContent = "Processing…";
+    generateBtn.disabled = true;
+
+            let raw;
+            try {
+                const res = await fetch(url);
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
+                }
+
+                raw = await res.text();
+            } catch (e) {
+                document.getElementById('testCasesSection').style.display = 'block';
+                document.getElementById('testCasesCount').innerHTML = `
+                    <div class="error-message gateway-message">
+                        <strong>Service Temporarily Unavailable</strong>
+                        <p>Please try again in a moment.</p>
+                    </div>
+                `;
+                    generateBtn.textContent = originalText;
+                    generateBtn.disabled = false;
+                return;
+            }
+
+            lastRawResult = raw;
+            lastStrength = strength;
+            lastValues = values;
+
+            const decoded = decodeBackendResult(raw, validParams);
+
+            renderDecodedResults(decoded, strength);
+
+                generateBtn.textContent = originalText;
+                generateBtn.disabled = false;
+        }
+        
+        function decodeRawResultToNames(raw) {
+            return raw
+                .split("\n")
+                .filter(line => /^\d+\)/.test(line))
+                .map(line => {
+                    const nums = line
+                        .replace(/^\d+\)\s*/, "")
+                        .trim()
+                        .split(/\s+/)
+                        .map(Number);
+
+                    const names = nums.map((n, i) =>
+                        inputEncoding[i]?.numToName[n] ?? n
+                    );
+
+                    return `${line.split(")")[0]}) ${names.join(", ")}`;
+                })
+                .join("\n");
+        }
+
+        function decodeBackendResult(raw, validParams) {
+    const lines = raw.split("\n");
+
+    return lines.map(line => {
+        if (!line.match(/^\d+\)/)) return line;
+
+        const nums = line
+            .replace(/^\d+\)\s*/, "")
+            .trim()
+            .split(/\s+/)
+            .map(Number);
+
+        const names = nums.map((n, i) => {
+            const originalIndex = parameters.indexOf(validParams[i]);
+            return inputEncoding[originalIndex].numToName[n];
+        });
+
+        return `${line.split(")")[0]}) ${names.join(", ")}`;
+    });
+}
+
+        function renderDecodedResults(results, strength) {
+            const section = document.getElementById('testCasesSection');
+            const count = document.getElementById('testCasesCount');
+            const container = document.getElementById('testCasesContainer');
+
+            container.innerHTML = '';
+
+            results.forEach(r => {
+                const div = document.createElement('div');
+                div.className = 'test-case';
+                div.textContent = r;
+                container.appendChild(div);
+            });
+
+            const realCases = results.filter(r => r.match(/^\d+\)/));
+
+            // ✅ STORE FINAL STATE
+    lastRawResult = realCases.join("\n");
+    lastStrength = strength;
+    lastValues = parameters.filter(p => p.inputs.length > 0).map(p => p.inputs.length);
+
+            count.textContent = `${realCases.length} test cases generated`;
+
+            // ✅ PNG HEADER DATA
+    pngStrength.textContent =
+    document.getElementById("strengthInput")?.value ?? strength;
+    document.getElementById("pngConfig").textContent =
+        lastValues.join(", ");
+        
+            section.style.display = 'block';
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+                function exportToXML() {
+                if (parameters.length === 0) {
+                    alert("No configuration to export.");
+                    return;
+                }
+
+                const strength = document.getElementById('strengthInput')?.value || 2;
+
+                let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+                xml += `<combinatorialTestDesign>\n`;
+                xml += `  <interactionStrength>${strength}</interactionStrength>\n`;
+                xml += `  <parameters>\n`;
+
+                parameters.forEach(p => {
+                    if (p.inputs.length === 0) return;
+
+                    xml += `    <parameter name="${escapeXML(p.name)}">\n`;
+                    p.inputs.forEach(v => {
+                        xml += `      <value>${escapeXML(v)}</value>\n`;
+                    });
+                    xml += `    </parameter>\n`;
+                });
+
+                xml += `  </parameters>\n`;
+
+                // ✅ OPTION B: export already-decoded NAMES
+                if (lastRawResult && lastRawResult.trim() !== "") {
+                    xml += `  <generatedTestSuite><![CDATA[\n`;
+                    xml += `${lastRawResult}\n`;
+                    xml += `  ]]></generatedTestSuite>\n`;
+                }
+
+                xml += `</combinatorialTestDesign>`;
+
+                const blob = new Blob([xml], { type: "application/xml" });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "tway-test-configuration.xml";
+                a.click();
+
+                URL.revokeObjectURL(url);
+            }
+
+        function escapeXML(str) {
+            return str.replace(/[<>&'"]/g, c =>
+                ({ '<':'&lt;', '>':'&gt;', '&':'&amp;', "'":'&apos;', '"':'&quot;' }[c])
+            );
+        }
+
+        function importFromXML(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = () => parseXML(reader.result);
+            reader.readAsText(file);
+        }
+
+        function parseXML(xmlText) {
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(xmlText, "application/xml");
+
+            const strengthNode = xml.querySelector("interactionStrength");
+            if (strengthNode) {
+                document.getElementById("strengthInput").value = strengthNode.textContent;
+            }
+
+            const paramNodes = xml.querySelectorAll("parameter");
+
+            parameters = [];
+            inputEncoding = {};
+
+            paramNodes.forEach((pNode, idx) => {
+                const name = pNode.getAttribute("name");
+                const values = [...pNode.querySelectorAll("value")].map(v => v.textContent);
+
+                parameters.push({ name, inputs: values });
+
+                inputEncoding[idx] = { nameToNum: {}, numToName: {} };
+                values.forEach((val, i) => {
+                    inputEncoding[idx].nameToNum[val] = i + 1;
+                    inputEncoding[idx].numToName[i + 1] = val;
+                });
+            });
+
+            updateTables();
+            updateFormulaB();
+
+            // ✅ ADD FROM HERE ↓↓↓
+            const resultNode = xml.querySelector("generatedTestSuite");
+
+            if (resultNode) {
+                const text = resultNode.textContent.trim();
+
+                const results = text
+                    .split("\n")
+                    .map(l => l.trim())
+                    .filter(l => l);
+
+                renderDecodedResults(results, lastStrength);
+
+                // restore session state
+                lastRawResult = text;
+                lastStrength = document.getElementById("strengthInput").value;
+                lastValues = parameters.map(p => p.inputs.length);
+            }
+        }
+
+        async function savePNGB() {
+    const box = document.getElementById("captureBoxB");
+    const container = document.getElementById("testCasesContainer");
+
+    // ✅ Save original styles
+    const originalMaxHeight = container.style.maxHeight;
+    const originalOverflow = container.style.overflowY;
+
+    // ✅ Expand to show ALL test cases
+    container.style.maxHeight = "none";
+    container.style.overflowY = "visible";
+
+    // Allow layout to update
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    const canvas = await html2canvas(box, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#0f172a",
+        windowWidth: box.scrollWidth,
+        windowHeight: box.scrollHeight
+    });
+
+    // ✅ Restore original styles
+    container.style.maxHeight = originalMaxHeight;
+    container.style.overflowY = originalOverflow;
+
+    const imgData = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.href = imgData;
+    link.download = "SandCatGo_Full_TestSuite.png";
+    link.click();
+}
+
+
+        function downloadTextB() {
+    if (!lastRawResult) {
+        alert("No test suite generated yet.");
+        return;
+    }
+
+    let outputText;
+
+    // ✅ Check if result already contains names (not numbers)
+    const hasNames = /[a-zA-Z]/.test(lastRawResult);
+
+    if (hasNames) {
+        // Already decoded (from XML import)
+        outputText = lastRawResult
+            .split("\n")
+            .filter(l => l.trim())
+            .join("\n");
+    } else {
+        // Numeric result → decode normally
+        outputText = decodeRawResultToNames(lastRawResult);
+    }
+
+    const count = outputText
+        .split("\n")
+        .filter(line => /^\d+\)/.test(line))
+        .length;
+
+    const header =
+`Test Suite
+Interaction Strength (t): ${lastStrength}
+Values: [${lastValues.join(", ")}]`;
+
+    const footer = `Completed with ${count} test cases.`;
+
+    const finalText = `${header}\n\n${outputText}\n\n${footer}`;
+
+    const blob = new Blob([finalText], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "TestSuite.txt";
+    link.click();
+}
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enter key support for parameter input
+            document.getElementById('paramInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addParameter();
+                }
+            });
+            
+            // Enter key support for strength input
+            document.getElementById('strengthInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    generateTestCasesBackend();
+                }
+            });
+             
+            updateTables();
+            updateFormulaB();
+        });
+
+        // Initialize particles when page loads
+        window.addEventListener('DOMContentLoaded', createParticles);
+    </script>
+
+    <!-- 🔒 DevTools / View Source deterrent -->
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        document.addEventListener('keydown', function (e) {
+            if (
+                e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+                (e.ctrlKey && e.key === 'U')
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>
