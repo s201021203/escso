@@ -1078,18 +1078,28 @@
         </div>
 
         <div class="card result-card">
-            <div class="result-header">
-                <h3>Generated Test Suite</h3>
-                <div class="test-count" id="testCount">0 test cases</div>
-            </div>
-            <div class="result-container" id="result">
-                <div class="awaiting-config">Awaiting input configuration...</div>
-            </div>
-            <div class="export-controls">
-                <button id="printBtn" class="export-btn" style="display:none;" onclick="savePNG()">Save as PNG</button>
-                <button id="downloadBtn" class="export-btn" style="display:none;" onclick="downloadText()">Download as TXT</button>
-            </div>
+
+    <!-- ✅ ADD THIS WRAPPER -->
+    <div id="captureResultA">
+
+        <div class="result-header">
+            <h3>Generated Test Suite</h3>
+            <div class="test-count" id="testCount">0 test cases</div>
         </div>
+
+        <div class="result-container" id="result">
+            <div class="awaiting-config">Awaiting input configuration...</div>
+        </div>
+
+    </div>
+
+    <div class="export-controls">
+        <button id="printBtn" class="export-btn" style="display:none;" onclick="savePNG()">Save as PNG</button>
+        <button id="downloadBtn" class="export-btn" style="display:none;" onclick="downloadText()">Download as TXT</button>
+    </div>
+
+    </div>
+
     </div>
 </div>
 
@@ -1420,17 +1430,38 @@
 }
 
         async function savePNG() {
-            const box = document.getElementById("captureBox");
-            const canvas = await html2canvas(box, { 
-                scale: 2,
-                backgroundColor: "#0f172a"
-            });
-            const imgData = canvas.toDataURL("image/png");
-            const link = document.createElement("a");
-            link.href = imgData;
-            link.download = "SandCatGo_TestSuite.png";
-            link.click();
-        }
+    const box = document.getElementById("captureResultA");
+    const resultContainer = document.getElementById("result");
+
+    // ✅ Save original styles
+    const originalMaxHeight = resultContainer.style.maxHeight;
+    const originalOverflow = resultContainer.style.overflowY;
+
+    // ✅ Expand to show ALL test cases
+    resultContainer.style.maxHeight = "none";
+    resultContainer.style.overflowY = "visible";
+
+    // Allow layout to update
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    const canvas = await html2canvas(box, {
+        scale: 2,
+        backgroundColor: "#0f172a",
+        windowWidth: box.scrollWidth,
+        windowHeight: box.scrollHeight
+    });
+
+    // ✅ Restore original styles
+    resultContainer.style.maxHeight = originalMaxHeight;
+    resultContainer.style.overflowY = originalOverflow;
+
+    const imgData = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.href = imgData;
+    link.download = "SandCatGo_TestSuite_Result.png";
+    link.click();
+}
+
 
         function downloadText() {
 
